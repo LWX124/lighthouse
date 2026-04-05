@@ -203,6 +203,69 @@ export type Database = {
         >;
         Relationships: [];
       };
+      sources: {
+        Row: {
+          id: string;
+          name: string;
+          type: "hn" | "ph" | "reddit" | "rss" | "x";
+          config: Record<string, unknown>;
+          fetch_interval: number;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["sources"]["Row"],
+          "id" | "created_at"
+        >;
+        Update: Partial<
+          Database["public"]["Tables"]["sources"]["Insert"]
+        >;
+        Relationships: [];
+      };
+      news_items: {
+        Row: {
+          id: string;
+          source_id: string;
+          title: string;
+          url: string;
+          summary: string | null;
+          content: string | null;
+          ai_tags: string[];
+          ai_summary: string | null;
+          engagement_score: number;
+          published_at: string;
+          created_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["news_items"]["Row"],
+          "id" | "created_at"
+        >;
+        Update: Partial<
+          Database["public"]["Tables"]["news_items"]["Insert"]
+        >;
+        Relationships: [];
+      };
+      demand_signals: {
+        Row: {
+          id: string;
+          news_item_id: string;
+          signal_type: "pain_point" | "solution_req" | "trending";
+          score: number;
+          market_size_est: string | null;
+          competition_lvl: "low" | "medium" | "high" | null;
+          ai_analysis: string | null;
+          status: "active" | "archived" | "dismissed";
+          created_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["demand_signals"]["Row"],
+          "id" | "created_at"
+        >;
+        Update: Partial<
+          Database["public"]["Tables"]["demand_signals"]["Insert"]
+        >;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

@@ -18,6 +18,7 @@ export type Database = {
         Update: Partial<
           Database["public"]["Tables"]["profiles"]["Insert"]
         >;
+        Relationships: [];
       };
       subscriptions: {
         Row: {
@@ -37,6 +38,7 @@ export type Database = {
         Update: Partial<
           Database["public"]["Tables"]["subscriptions"]["Insert"]
         >;
+        Relationships: [];
       };
       categories: {
         Row: {
@@ -56,6 +58,7 @@ export type Database = {
         Update: Partial<
           Database["public"]["Tables"]["categories"]["Insert"]
         >;
+        Relationships: [];
       };
       tutorials: {
         Row: {
@@ -80,6 +83,7 @@ export type Database = {
         Update: Partial<
           Database["public"]["Tables"]["tutorials"]["Insert"]
         >;
+        Relationships: [];
       };
       tutorial_progress: {
         Row: {
@@ -97,6 +101,7 @@ export type Database = {
         Update: Partial<
           Database["public"]["Tables"]["tutorial_progress"]["Insert"]
         >;
+        Relationships: [];
       };
       user_usage: {
         Row: {
@@ -114,7 +119,12 @@ export type Database = {
         Update: Partial<
           Database["public"]["Tables"]["user_usage"]["Insert"]
         >;
+        Relationships: [];
       };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
 };

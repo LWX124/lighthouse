@@ -15,10 +15,16 @@ export default async function TutorialPage({ params }: Props) {
   const { category: categorySlug, slug } = await params;
   const supabase = await createClient();
 
-  const [{ data: categories }, { data: tutorial }] = await Promise.all([
-    supabase.from("categories").select("*").order("order"),
-    supabase.from("tutorials").select("*").eq("slug", slug).single(),
-  ]);
+  const { data: categories } = await supabase
+    .from("categories")
+    .select("*")
+    .order("order");
+
+  const { data: tutorial } = await supabase
+    .from("tutorials")
+    .select("*")
+    .eq("slug", slug)
+    .single();
 
   if (!tutorial) notFound();
 

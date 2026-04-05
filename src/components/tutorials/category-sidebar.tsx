@@ -4,15 +4,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Database } from "@/lib/supabase/types";
 
 type Category = Database["public"]["Tables"]["categories"]["Row"];
+type CategoryNode = Category & { children: CategoryNode[] };
 
 interface CategorySidebarProps {
   categories: Category[];
   activeSlug?: string;
 }
 
-function buildTree(
-  categories: Category[]
-): (Category & { children: Category[] })[] {
+function buildTree(categories: Category[]): CategoryNode[] {
   const map = new Map<string | null, Category[]>();
   for (const cat of categories) {
     const parentId = cat.parent_id;
@@ -20,9 +19,7 @@ function buildTree(
     map.get(parentId)!.push(cat);
   }
 
-  function getChildren(
-    parentId: string | null
-  ): (Category & { children: Category[] })[] {
+  function getChildren(parentId: string | null): CategoryNode[] {
     return (map.get(parentId) ?? [])
       .sort((a, b) => a.order - b.order)
       .map((cat) => ({ ...cat, children: getChildren(cat.id) }));
@@ -65,9 +62,7 @@ function CategoryItem({
   activeSlug,
   depth,
 }: {
-  category: Category & {
-    children: (Category & { children: Category[] })[];
-  };
+  category: CategoryNode;
   activeSlug?: string;
   depth: number;
 }) {

@@ -121,6 +121,88 @@ export type Database = {
         >;
         Relationships: [];
       };
+      tool_categories: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          description: string | null;
+          icon: string | null;
+          parent_id: string | null;
+          order: number;
+          created_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["tool_categories"]["Row"],
+          "id" | "created_at"
+        >;
+        Update: Partial<
+          Database["public"]["Tables"]["tool_categories"]["Insert"]
+        >;
+        Relationships: [];
+      };
+      ai_tools: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          url: string;
+          description: string | null;
+          logo_url: string | null;
+          category_id: string | null;
+          pricing_model: "free" | "freemium" | "paid" | "open_source";
+          features: unknown[];
+          tags: string[];
+          verified: boolean;
+          status: "draft" | "published";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["ai_tools"]["Row"],
+          "id" | "created_at" | "updated_at"
+        >;
+        Update: Partial<
+          Database["public"]["Tables"]["ai_tools"]["Insert"]
+        >;
+        Relationships: [];
+      };
+      tool_rankings: {
+        Row: {
+          id: string;
+          tool_id: string;
+          period: string;
+          monthly_visits: number;
+          growth_rate: number;
+          rank: number | null;
+          category_rank: number | null;
+          created_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["tool_rankings"]["Row"],
+          "id" | "created_at"
+        >;
+        Update: Partial<
+          Database["public"]["Tables"]["tool_rankings"]["Insert"]
+        >;
+        Relationships: [];
+      };
+      tool_bookmarks: {
+        Row: {
+          id: string;
+          user_id: string;
+          tool_id: string;
+          created_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["tool_bookmarks"]["Row"],
+          "id" | "created_at"
+        >;
+        Update: Partial<
+          Database["public"]["Tables"]["tool_bookmarks"]["Insert"]
+        >;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

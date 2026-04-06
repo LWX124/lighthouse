@@ -89,7 +89,9 @@ export async function POST(request: NextRequest) {
           .from("subscriptions")
           .update({
             plan: plan ?? "free",
-            status: sub.status === "active" ? "active" : "canceled",
+            status: sub.status === "active" ? "active"
+              : sub.status === "past_due" ? "past_due"
+              : "canceled",
             current_period_start: item?.current_period_start
               ? new Date(item.current_period_start * 1000).toISOString()
               : null,

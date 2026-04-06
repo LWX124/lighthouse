@@ -23,6 +23,14 @@ export default function EditTutorialPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [categoryId, setCategoryId] = useState<string>("");
+
+  useEffect(() => {
+    fetch("/api/admin/categories")
+      .then((r) => r.json())
+      .then((data) => setCategories(data.categories ?? []));
+  }, []);
 
   useEffect(() => {
     fetch(`/api/admin/tutorials/${id}`)
@@ -35,6 +43,7 @@ export default function EditTutorialPage() {
           setContent(t.content);
           setStatus(t.status);
           setIsFree(t.is_free);
+          setCategoryId(t.category_id ?? "");
         }
         setLoading(false);
       });
@@ -46,7 +55,14 @@ export default function EditTutorialPage() {
     const res = await fetch(`/api/admin/tutorials/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, slug, content, status: newStatus, is_free: isFree }),
+      body: JSON.stringify({
+        title,
+        slug,
+        content,
+        status: newStatus,
+        is_free: isFree,
+        category_id: categoryId || null,
+      }),
     });
     const data = await res.json();
     setSaving(false);
@@ -83,6 +99,20 @@ export default function EditTutorialPage() {
             onChange={(e) => setSlug(e.target.value)}
             className="mt-1 w-full rounded border bg-background px-3 py-2 text-sm font-mono"
           />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium">教程系列</label>
+          <select
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            className="mt-1 w-full rounded border bg-background px-3 py-2 text-sm"
+          >
+            <option value="">无系列</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
         </div>
 
         <div className="flex items-center gap-2">

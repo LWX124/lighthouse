@@ -21,6 +21,7 @@ export default function AdminDemandsPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("pending");
   const [items, setItems] = useState<ModerationItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [moderateError, setModerateError] = useState<string | null>(null);
 
   const fetchItems = async (status: StatusFilter) => {
     setLoading(true);
@@ -45,11 +46,17 @@ export default function AdminDemandsPage() {
   }, [statusFilter]);
 
   const moderate = async (ids: string[], action: "approve" | "reject") => {
-    await fetch("/api/admin/demands/moderate", {
+    setModerateError(null);
+    const res = await fetch("/api/admin/demands/moderate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids, action }),
     });
+    if (!res.ok) {
+      const data = await res.json();
+      setModerateError(data.error ?? "操作失败");
+      return;
+    }
     fetchItems(statusFilter);
   };
 
@@ -72,6 +79,8 @@ export default function AdminDemandsPage() {
           </button>
         ))}
       </div>
+
+      {moderateError && <p className="text-sm text-red-500">{moderateError}</p>}
 
       {loading ? (
         <p className="text-sm text-muted-foreground">加载中...</p>

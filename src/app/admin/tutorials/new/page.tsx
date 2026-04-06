@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TutorialEditor } from "@/components/admin/tutorial-editor";
 
@@ -20,6 +20,14 @@ export default function NewTutorialPage() {
   const [isFree, setIsFree] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [categoryId, setCategoryId] = useState<string>("");
+
+  useEffect(() => {
+    fetch("/api/admin/categories")
+      .then((r) => r.json())
+      .then((data) => setCategories(data.categories ?? []));
+  }, []);
 
   const handleTitleChange = (v: string) => {
     setTitle(v);
@@ -38,6 +46,7 @@ export default function NewTutorialPage() {
         content,
         is_free: isFree,
         status,
+        category_id: categoryId || null,
       }),
     });
     const data = await res.json();
@@ -72,6 +81,20 @@ export default function NewTutorialPage() {
             className="mt-1 w-full rounded border bg-background px-3 py-2 text-sm font-mono"
             placeholder="tutorial-slug"
           />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium">教程系列</label>
+          <select
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            className="mt-1 w-full rounded border bg-background px-3 py-2 text-sm"
+          >
+            <option value="">无系列</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
         </div>
 
         <div className="flex items-center gap-2">

@@ -28,7 +28,7 @@ export function AdminSidebar() {
             href={item.href}
             className={cn(
               "rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
-              pathname === item.href
+              pathname.startsWith(item.href)
                 ? "bg-accent text-accent-foreground font-medium"
                 : "text-muted-foreground"
             )}

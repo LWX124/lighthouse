@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-
-async function requireAdmin(supabase: Awaited<ReturnType<typeof createClient>>) {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  const { data: profile } = await supabase
-    .from("profiles").select("role").eq("id", user.id).single();
-  return profile?.role === "admin" ? user : null;
-}
+import { requireAdmin } from "@/lib/admin/require-admin";
 
 export async function GET() {
   const supabase = await createClient();
-  const user = await requireAdmin(supabase);
-  if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const { user, status } = await requireAdmin(supabase);
+  if (!user) return NextResponse.json({ error: status === 401 ? "Unauthorized" : "Forbidden" }, { status: status! });
 
   const { data, error } = await supabase
     .from("tutorials")
@@ -25,11 +18,11 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
-  const user = await requireAdmin(supabase);
-  if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const { user, status } = await requireAdmin(supabase);
+  if (!user) return NextResponse.json({ error: status === 401 ? "Unauthorized" : "Forbidden" }, { status: status! });
 
   const body = await request.json();
-  const { title, slug, content, category_id, is_free, status } = body as {
+  const { title, slug, content, category_id, is_free, status: tutorialStatus } = body as {
     title: string;
     slug: string;
     content: string;
@@ -51,7 +44,7 @@ export async function POST(request: NextRequest) {
       summary: null,
       category_id: category_id ?? null,
       is_free: is_free ?? true,
-      status: status ?? "draft",
+      status: tutorialStatus ?? "draft",
       order: 0,
       read_time_minutes: Math.ceil(content.split(/\s+/).length / 200),
     })

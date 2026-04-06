@@ -14,7 +14,7 @@ export async function getSubscription(userId: string): Promise<SubscriptionInfo>
     .from("subscriptions")
     .select("plan, status, current_period_end")
     .eq("user_id", userId)
-    .eq("status", "active")
+    .in("status", ["active", "past_due"])
     .single();
 
   if (!data) {
@@ -29,7 +29,7 @@ export async function getSubscription(userId: string): Promise<SubscriptionInfo>
   return {
     plan: data.plan as "free" | "pro",
     status: data.status as "active" | "canceled" | "past_due",
-    isPro: data.plan === "pro",
+    isPro: data.plan === "pro" && data.status === "active",
     currentPeriodEnd: data.current_period_end,
   };
 }

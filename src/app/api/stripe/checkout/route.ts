@@ -25,14 +25,14 @@ export async function POST(request: NextRequest) {
   try {
     const stripe = getStripe();
 
-    // Check if user already has a Stripe subscription
+    // Check if user already has an active Stripe subscription
     const { data: subscription } = await supabase
       .from("subscriptions")
-      .select("stripe_sub_id")
+      .select("stripe_sub_id, status")
       .eq("user_id", user.id)
       .single();
 
-    if (subscription?.stripe_sub_id) {
+    if (subscription?.stripe_sub_id && subscription.status === "active") {
       return Response.json(
         { error: "已有活跃订阅" },
         { status: 400 }
@@ -47,6 +47,9 @@ export async function POST(request: NextRequest) {
       client_reference_id: user.id,
       customer_email: user.email,
       metadata: { userId: user.id },
+      subscription_data: {
+        metadata: { userId: user.id },
+      },
     });
 
     return Response.json({ url: session.url });

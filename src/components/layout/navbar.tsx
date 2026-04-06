@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/server";
+import { NavbarAuth } from "./navbar-auth";
 
 const navLinks = [
   { href: "/tutorials", label: "教程" },
@@ -9,7 +10,25 @@ const navLinks = [
   { href: "/practice", label: "AI实践" },
 ];
 
-export function Navbar() {
+export async function Navbar() {
+  const supabase = await createClient();
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser();
+
+  let isPro = false;
+  if (authUser) {
+    const { data: sub } = await supabase
+      .from("subscriptions")
+      .select("plan")
+      .eq("user_id", authUser.id)
+      .eq("status", "active")
+      .single();
+    isPro = sub?.plan === "pro";
+  }
+
+  const user = authUser ? { email: authUser.email ?? "" } : null;
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
@@ -27,16 +46,7 @@ export function Navbar() {
             </Link>
           ))}
         </div>
-        <div className="flex items-center gap-3">
-          <Link href="/login">
-            <Button variant="ghost" size="sm">
-              登录
-            </Button>
-          </Link>
-          <Link href="/signup">
-            <Button size="sm">注册</Button>
-          </Link>
-        </div>
+        <NavbarAuth initialUser={user} isPro={isPro} />
       </nav>
     </header>
   );

@@ -266,6 +266,46 @@ export type Database = {
         >;
         Relationships: [];
       };
+      practice_plans: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          title: string;
+          input_prompt: string | null;
+          status: "pending" | "generating" | "done";
+          result: Record<string, unknown> | null;
+          model_used: string;
+          is_public: boolean;
+          download_count: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["practice_plans"]["Row"],
+          "id" | "created_at" | "updated_at" | "download_count"
+        >;
+        Update: Partial<
+          Database["public"]["Tables"]["practice_plans"]["Insert"]
+        >;
+        Relationships: [];
+      };
+      plan_messages: {
+        Row: {
+          id: string;
+          plan_id: string;
+          role: "user" | "assistant";
+          content: string;
+          created_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["plan_messages"]["Row"],
+          "id" | "created_at"
+        >;
+        Update: Partial<
+          Database["public"]["Tables"]["plan_messages"]["Insert"]
+        >;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

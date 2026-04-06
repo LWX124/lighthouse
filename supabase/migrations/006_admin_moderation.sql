@@ -5,6 +5,9 @@ alter table public.news_items
 
 create index news_items_status_idx on public.news_items(status);
 
+-- Backfill existing rows to approved so they remain visible
+update public.news_items set status = 'approved' where status = 'pending';
+
 -- Update RLS for news_items: public sees only approved, admins see all
 drop policy if exists "News items are viewable by everyone" on public.news_items;
 

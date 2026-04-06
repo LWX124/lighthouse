@@ -44,10 +44,10 @@ export function setupRSSCollector(config: AppConfig): { queue: Queue; worker: Wo
   const connection = getRedis(config.redisUrl);
   const parser = new Parser();
 
-  const queue = new Queue("collect:rss", { connection });
+  const queue = new Queue("collect-rss", { connection });
 
   const worker = new Worker(
-    "collect:rss",
+    "collect-rss",
     async () => {
       const supabase = getSupabase(config.supabaseUrl, config.supabaseServiceRoleKey);
 

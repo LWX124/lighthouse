@@ -36,10 +36,10 @@ export function parseTagResponse(text: string): { tags: string[]; summary: strin
 export function setupAITagSummarize(config: AppConfig): { queue: Queue; worker: Worker } {
   const connection = getRedis(config.redisUrl);
 
-  const queue = new Queue("ai:tag-and-summarize", { connection });
+  const queue = new Queue("ai-tag-and-summarize", { connection });
 
   const worker = new Worker(
-    "ai:tag-and-summarize",
+    "ai-tag-and-summarize",
     async () => {
       const supabase = getSupabase(config.supabaseUrl, config.supabaseServiceRoleKey);
       const anthropic = getAnthropic(config.anthropicApiKey);

@@ -88,10 +88,10 @@ async function fetchPHPosts(): Promise<PHPost[]> {
 export function setupPHCollector(config: AppConfig): { queue: Queue; worker: Worker } {
   const connection = getRedis(config.redisUrl);
 
-  const queue = new Queue("collect:producthunt", { connection });
+  const queue = new Queue("collect-producthunt", { connection });
 
   const worker = new Worker(
-    "collect:producthunt",
+    "collect-producthunt",
     async () => {
       const supabase = getSupabase(config.supabaseUrl, config.supabaseServiceRoleKey);
 

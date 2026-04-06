@@ -88,10 +88,10 @@ async function fetchRedditPosts(): Promise<RedditPost[]> {
 export function setupRedditCollector(config: AppConfig): { queue: Queue; worker: Worker } {
   const connection = getRedis(config.redisUrl);
 
-  const queue = new Queue("collect:reddit", { connection });
+  const queue = new Queue("collect-reddit", { connection });
 
   const worker = new Worker(
-    "collect:reddit",
+    "collect-reddit",
     async () => {
       const supabase = getSupabase(config.supabaseUrl, config.supabaseServiceRoleKey);
 

@@ -51,10 +51,10 @@ async function fetchHNFrontPage(): Promise<HNHit[]> {
 export function setupHNCollector(config: AppConfig): { queue: Queue; worker: Worker } {
   const connection = getRedis(config.redisUrl);
 
-  const queue = new Queue("collect:hackernews", { connection });
+  const queue = new Queue("collect-hackernews", { connection });
 
   const worker = new Worker(
-    "collect:hackernews",
+    "collect-hackernews",
     async () => {
       const supabase = getSupabase(config.supabaseUrl, config.supabaseServiceRoleKey);
 

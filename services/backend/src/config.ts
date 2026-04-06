@@ -4,7 +4,7 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().url().min(1),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   REDIS_URL: z.string().min(1).default("redis://localhost:6379"),
-  ANTHROPIC_API_KEY: z.string().min(1),
+  ANTHROPIC_API_KEY: z.string().default(""),
   PORT: z.coerce.number().int().positive().default(3001),
 });
 

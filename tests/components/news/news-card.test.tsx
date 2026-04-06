@@ -12,6 +12,7 @@ const mockNewsItem = {
   ai_tags: ["claude", "llm", "coding"],
   ai_summary: "Claude 4.5 在 SWE-bench 测试中达到新高",
   engagement_score: 342,
+  status: "approved" as const,
   published_at: "2026-04-05T10:00:00Z",
   created_at: "2026-04-05T10:00:00Z",
 };

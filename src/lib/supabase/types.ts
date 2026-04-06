@@ -233,6 +233,7 @@ export type Database = {
           ai_tags: string[];
           ai_summary: string | null;
           engagement_score: number;
+          status: "pending" | "approved" | "rejected";
           published_at: string;
           created_at: string;
         };
@@ -254,7 +255,7 @@ export type Database = {
           market_size_est: string | null;
           competition_lvl: "low" | "medium" | "high" | null;
           ai_analysis: string | null;
-          status: "active" | "archived" | "dismissed";
+          status: "pending" | "active" | "archived" | "dismissed";
           created_at: string;
         };
         Insert: Omit<

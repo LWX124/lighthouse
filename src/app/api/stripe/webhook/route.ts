@@ -54,18 +54,20 @@ export async function POST(request: NextRequest) {
           const plan = priceId ? getPlanByPriceId(priceId) : null;
 
           if (plan) {
+            // In Stripe v22+, current_period_* moved to SubscriptionItem
+            const item = sub.items.data[0];
             await supabase
               .from("subscriptions")
               .update({
                 plan,
                 status: "active",
                 stripe_sub_id: sub.id,
-                current_period_start: new Date(
-                  sub.current_period_start * 1000
-                ).toISOString(),
-                current_period_end: new Date(
-                  sub.current_period_end * 1000
-                ).toISOString(),
+                current_period_start: item?.current_period_start
+                  ? new Date(item.current_period_start * 1000).toISOString()
+                  : null,
+                current_period_end: item?.current_period_end
+                  ? new Date(item.current_period_end * 1000).toISOString()
+                  : null,
               })
               .eq("user_id", userId);
           }
@@ -80,18 +82,20 @@ export async function POST(request: NextRequest) {
 
         const priceId = sub.items.data[0]?.price.id;
         const plan = priceId ? getPlanByPriceId(priceId) : "free";
+        // In Stripe v22+, current_period_* moved to SubscriptionItem
+        const item = sub.items.data[0];
 
         await supabase
           .from("subscriptions")
           .update({
             plan: plan ?? "free",
             status: sub.status === "active" ? "active" : "canceled",
-            current_period_start: new Date(
-              sub.current_period_start * 1000
-            ).toISOString(),
-            current_period_end: new Date(
-              sub.current_period_end * 1000
-            ).toISOString(),
+            current_period_start: item?.current_period_start
+              ? new Date(item.current_period_start * 1000).toISOString()
+              : null,
+            current_period_end: item?.current_period_end
+              ? new Date(item.current_period_end * 1000).toISOString()
+              : null,
           })
           .eq("user_id", userId);
         break;

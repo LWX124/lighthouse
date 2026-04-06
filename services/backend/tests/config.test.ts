@@ -12,7 +12,7 @@ describe("config", () => {
     vi.stubEnv("REDIS_URL", "redis://localhost:6379");
     vi.stubEnv("ANTHROPIC_API_KEY", "sk-ant-test");
 
-    const { loadConfig } = await import("../src/config.ts");
+    const { loadConfig } = await import("../src/config.js");
     expect(() => loadConfig()).toThrow();
   });
 
@@ -23,7 +23,7 @@ describe("config", () => {
     vi.stubEnv("ANTHROPIC_API_KEY", "sk-ant-test-key");
     vi.stubEnv("PORT", "4000");
 
-    const { loadConfig } = await import("../src/config.ts");
+    const { loadConfig } = await import("../src/config.js");
     const config = loadConfig();
 
     expect(config.supabaseUrl).toBe("https://test.supabase.co");
@@ -39,7 +39,7 @@ describe("config", () => {
     vi.stubEnv("REDIS_URL", "redis://localhost:6379");
     vi.stubEnv("ANTHROPIC_API_KEY", "sk-ant-test-key");
 
-    const { loadConfig } = await import("../src/config.ts");
+    const { loadConfig } = await import("../src/config.js");
     const config = loadConfig();
     expect(config.port).toBe(3001);
   });

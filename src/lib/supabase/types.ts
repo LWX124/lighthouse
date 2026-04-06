@@ -282,8 +282,12 @@ export type Database = {
         };
         Insert: Omit<
           Database["public"]["Tables"]["practice_plans"]["Row"],
-          "id" | "created_at" | "updated_at" | "download_count"
-        >;
+          "id" | "created_at" | "updated_at" | "download_count" | "input_prompt" | "result" | "is_public"
+        > & {
+          input_prompt?: string | null;
+          result?: Record<string, unknown> | null;
+          is_public?: boolean;
+        };
         Update: Partial<
           Database["public"]["Tables"]["practice_plans"]["Insert"]
         >;

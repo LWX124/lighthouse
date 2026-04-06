@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
           .update({ status: "done" })
           .eq("id", planId);
 
-        // Increment usage counter
+        // Increment usage counter (ignore errors — non-critical)
         const today = new Date().toISOString().split("T")[0];
         await supabase
           .from("user_usage")
@@ -168,10 +168,7 @@ export async function POST(request: NextRequest) {
               tool_searches: 0,
             },
             { onConflict: "user_id,date" }
-          )
-          .catch(() => {
-            // Ignore upsert errors for usage tracking
-          });
+          );
 
         controller.enqueue(encoder.encode("data: [DONE]\n\n"));
         controller.close();

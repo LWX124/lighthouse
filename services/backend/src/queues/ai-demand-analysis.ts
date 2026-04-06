@@ -76,10 +76,10 @@ export function parseDemandResponse(text: string): DemandSignalResult | null {
 export function setupDemandAnalysis(config: AppConfig): { queue: Queue; worker: Worker } {
   const connection = getRedis(config.redisUrl);
 
-  const queue = new Queue("ai:demand-analysis", { connection });
+  const queue = new Queue("ai-demand-analysis", { connection });
 
   const worker = new Worker(
-    "ai:demand-analysis",
+    "ai-demand-analysis",
     async () => {
       const supabase = getSupabase(config.supabaseUrl, config.supabaseServiceRoleKey);
       const anthropic = getAnthropic(config.anthropicApiKey);
@@ -140,7 +140,7 @@ export function setupDemandAnalysis(config: AppConfig): { queue: Queue; worker: 
               market_size_est: result.market_size_est,
               competition_lvl: result.competition_lvl,
               ai_analysis: result.ai_analysis,
-              status: "active",
+              status: "pending",
             });
             signals++;
           }
